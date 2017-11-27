@@ -61,12 +61,14 @@ async def fetch(url):
     if not os.path.exists('data'):
         os.mkdir('data')
     if os.path.exists(fname) and os.path.isfile(fname):
-        await asyncio.sleep(0.1)
+        await asyncio.sleep(0.01)
         print("[CACHE]: %s" % url)
         return True
     try:
         async with aiohttp.ClientSession(conn_timeout=30, read_timeout=30) as session:
             async with session.get(url, headers=HEADERS) as response:
+                assert(response.status == 200)
+                assert(response.headers['Content-Type'].lower() == 'image/jpeg')
                 content = await response.content.read()
                 open(fname, "wb").write(content)
                 print("[DOWNLOAD]: %s" % url)
@@ -80,15 +82,51 @@ def worker():
     urlbase = "http://www.kubo720.com/case360/qianlijiangshantu/panos/s01.tiles/l5/%d/l5_%d_%d.jpg"
     # col: 1 - 12
     # row: 1 - 294
-    for col in range(13):
-        for n in range(60):
-            jobs = list(map(lambda n: fetch(urlbase % (col, col, n)), range(n*5, n*5+5)))
-            status = loop.run_until_complete(asyncio.gather(*jobs))
-            print(status)
+
+    urls = []
+    for col in range(1, 13):
+        for row in range(1, 295):
+            url = urlbase % (col, col, row)
+            urls.append(url)
     
+    idx  = 0
+    jobs = []
+
+    errors = 0
+    while idx < len(urls):
+        if len(jobs) == 100:
+            status_set = loop.run_until_complete(asyncio.gather(*jobs))
+            for status in status_set:
+                if status == False:
+                    errors += 1
+            jobs = []
+        else:
+            jobs.append(fetch(urls[idx]))
+            idx += 1
+
+    if len(jobs) > 0:
+        status_set = loop.run_until_complete(asyncio.gather(*jobs))
+        for status in status_set:
+            if status == False:
+                errors += 1
+        jobs = []
+
+    print("\n\n[Report] errors: %d" % errors)
+
+
+def check():
+    JPEG_MAGIC_BYTES = b'\xff\xd8\xff\xe0\x00\x10JFIF'
+    if not os.path.exists('data'):
+        os.mkdir('data')
+    for root, dirs, files in os.walk('data'):
+        for fname in files:
+            fpath = os.path.join(root, fname)
+            if open(fpath, 'rb').read(10) != JPEG_MAGIC_BYTES:
+                os.remove(fpath)
 
 def main():
     # run_server()
+    check()
     worker()
 
 if __name__ == '__main__':
