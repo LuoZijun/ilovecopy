@@ -33,7 +33,7 @@ def main():
     im = Image.new('RGB', (512*294, 512*12))
     for x in range(293):
         for y in range(11):
-            print("Process  ./data/l5_%03d_%03d.jpg  ZONE: SX: %06d EX: %06d SY: %06d EY: %06d  %sd pixels" \
+            print("Process  ./data/l5_%03d_%03d.jpg  ZONE: SX: %06d EX: %06d SY: %06d EY: %06d  %s pixels" \
                 % (y+1, x+1, x*512, x*512+512, y*512, y*512+512, BOX_SIZE) )
             put_box(x, y, im)
     im.show()
