@@ -82,7 +82,6 @@ def worker():
     urlbase = "http://www.kubo720.com/case360/qianlijiangshantu/panos/s01.tiles/l5/%d/l5_%d_%d.jpg"
     # col: 1 - 12
     # row: 1 - 294
-
     urls = []
     for col in range(1, 13):
         for row in range(1, 295):
