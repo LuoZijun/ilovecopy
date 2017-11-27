@@ -6,8 +6,23 @@ import time
 
 from PIL import Image
 
+# width  = 512 * 294
+# height = 512 * 12
+# pixels = width * height
+# bytes  = pixels * 3
+# bits   = bytes * 8
 
-# Pixels: (512*512)*294*12 = 924844032
+print(" Width: 512 * 294 = 150528")
+print("Height: 512 *  12 = 6144")
+print("Pxiels: 150528 * 6144 = 924_844_032")
+print(" Bytes: 924_844_032 * 3 = 2_774_532_096      ( 2_774_532_096/1024/1024 = 2646 MB )")
+print("  Bits: 2_774_532_096 * 8 = 22_196_256_768")
+
+#  Width: 512 * 294 = 150528
+# Height: 512 *  12 = 6144
+# Pxiels: 150528 * 6144 = 924_844_032
+#  Bytes: 924_844_032 * 3 = 2_774_532_096    
+#   Bits: 2_774_532_096 * 8 = 22_196_256_768
 
 BOX_WIDTH  = 512
 BOX_HEIGHT = 512
@@ -43,8 +58,8 @@ def main():
 
     etime = time.time()
 
-    print("\n\n[DONE] Duration: %ds" % etime - btime)
-    
+    print("\n\n[DONE] Duration: %fs" % etime - btime)
+
     im.show()
     im.save("result/output.jpg")
 
