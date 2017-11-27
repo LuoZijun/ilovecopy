@@ -1,11 +1,13 @@
 #!/usr/bin/env python3
 #coding: utf8
 
-# Pixels: (512*512)*294*12 = 924844032
-
 import os
+import time
 
 from PIL import Image
+
+
+# Pixels: (512*512)*294*12 = 924844032
 
 BOX_WIDTH  = 512
 BOX_HEIGHT = 512
@@ -30,12 +32,19 @@ def main():
     if not os.path.exists('result'):
         os.mkdir('result')
     
+    btime = time.time()
+
     im = Image.new('RGB', (512*294, 512*12))
     for x in range(293):
         for y in range(11):
             print("Process  ./data/l5_%03d_%03d.jpg  ZONE: SX: %06d EX: %06d SY: %06d EY: %06d  %s pixels" \
                 % (y+1, x+1, x*512, x*512+512, y*512, y*512+512, BOX_SIZE) )
             put_box(x, y, im)
+
+    etime = time.time()
+
+    print("\n\n[DONE] Duration: %ds" % etime - btime)
+    
     im.show()
     im.save("result/output.jpg")
 
