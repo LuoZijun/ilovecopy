@@ -77,11 +77,12 @@ async def fetch(url):
 
 def worker():
     loop = asyncio.get_event_loop()
-    urlbase = "http://www.kubo720.com/case360/qianlijiangshantu/panos/s01.tiles/l5/1/l5_1_%d.jpg"
-    for n in range(60):
-        jobs = list(map(lambda n: fetch(urlbase % n), range(n*5, n*5+5)))
-        status = loop.run_until_complete(asyncio.gather(*jobs))
-        print(status)
+    urlbase = "http://www.kubo720.com/case360/qianlijiangshantu/panos/s01.tiles/l5/%d/l5_%d_%d.jpg"
+    for col in range(12):
+        for n in range(60):
+            jobs = list(map(lambda n: fetch(urlbase % (col, col, n)), range(n*5, n*5+5)))
+            status = loop.run_until_complete(asyncio.gather(*jobs))
+            print(status)
 
 
 def main():
