@@ -41,9 +41,11 @@ fn put_box(x: u32, y: u32, pixels: &mut [u8]) {
 fn main (){
     let now = Instant::now();
 
-    let mut output = Cursor::new(vec![]);
+    let mut file = File::create("output.jpg").unwrap();
+
+    // let mut output = Cursor::new(vec![]);
     {
-        let mut encoder = image::png::PNGEncoder::new(&mut output);
+        let mut encoder = image::png::PNGEncoder::new(&mut file);
         let mut pixels: Vec<u8> = vec![0u8; SIZE*3];
         for x in 0..294{
             for y in 0..12 {
@@ -53,11 +55,12 @@ fn main (){
                 put_box(x as u32, y as u32, &mut pixels);
             }
         }
+        println!("\nEncoder begin ...");
+        let now2 = Instant::now();
+        println!("\nEncoder duration: {:?}", now2.elapsed());
         encoder.encode(&pixels, WIDTH as u32, HEIGHT as u32, image::ColorType::RGB(1));    
     }
     
-    let mut file = File::create("output.jpg").unwrap();
-    file.write_all(&output.into_inner());
-    let duration = now.elapsed();
-    println!("\nDONE: {:?}", duration);
+    // file.write_all(&output.into_inner());
+    println!("\nDONE: {:?}", now.elapsed());
 }
