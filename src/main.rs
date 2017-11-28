@@ -19,6 +19,7 @@ fn worker(){
     println!("Sample: {} * {} = {} pixels", WIDTH, HEIGHT, SIZE);
 
     let now = time::Instant::now();
+
     for x in 0..294 {
         let mut img = ImageBuffer::new(if x == 293 { 486 } else { 512 }, HEIGHT);
         img.put_pixel(0, 0, image::Rgb([0, 0, 0]));
@@ -30,10 +31,9 @@ fn worker(){
                 img.put_pixel(w, y*512+h, rgb_pixel);
             });
         }
-        println!("X: {:?}", x);
         img.save(format!("result/{}.png", x+1)).unwrap();
     }
-    println!("\nduration: {:?}", now.elapsed());
+    println!("\nvertical merge duration: {:?}", now.elapsed());
 
     let now2 = time::Instant::now();
     let mut img = ImageBuffer::new(WIDTH, HEIGHT);
@@ -46,14 +46,17 @@ fn worker(){
             img.put_pixel(y*512+w, h, rgb_pixel);
         });
     }
-    println!("\nduration: {:?}", now2.elapsed());
-
-    println!(":: Merge ...");
-    let now3 = time::Instant::now();
     img.save("output.png").unwrap();
-    println!("\nduration: {:?}", now3.elapsed());
+    println!("\nhorizontal merge duration: {:?}", now2.elapsed());
 
-    println!("\n\nDONE\n\n");
+    let now3 = time::Instant::now();
+    println!(":: Resize: {} x {}  -->  {} x {} ...", img.width(), img.height(),
+        65535, 3012);
+    let new_im = image::imageops::resize(&img, 65535, 3012, image::FilterType::Lanczos3);
+    new_im.save("output.resize.jpg").unwrap();
+    println!("\nresize duration: {:?}", now3.elapsed());
+
+    println!("\n:: DONE total duration: {:?}", now.elapsed());
 }
 
 fn main (){
