@@ -35,5 +35,11 @@ Run
     # python3 spider.py | grep 'ERROR'
 
     # Merge (long time ...)
-    python3 merge.py
+    # python3 merge.py
 
+    # macOS only
+    wget "https://github.com/LuoZijun/ilovecopy/releases/download/v0.01/encoder_v0.01_x86_64-apple-darwin"
+    mv encoder_v0.01_x86_64-apple-darwin encoder
+    chmod +x encoder
+    ./encoder
+    
